@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>SSD Cache Simulator</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/p5@1.4.0/lib/p5.min.js"></script>
+</head>
+<body>
+<div class="container">
+  <h1>SSD Cache Simulator</h1>
+  <div class="controls">
+    <label>Test Pattern
+      <select id="pattern">
+        <option value="seqRead">Sequential Read</option>
+        <option value="randRead">Random Read</option>
+        <option value="seqWrite">Sequential Write</option>
+        <option value="randWrite">Random Write</option>
+      </select>
+    </label>
+    <label>Cmd Size
+      <select id="cmdSize">
+        <option value="4">4KB</option>
+        <option value="8">8KB</option>
+        <option value="16">16KB</option>
+        <option value="32">32KB</option>
+        <option value="64">64KB</option>
+        <option value="128">128KB</option>
+      </select>
+    </label>
+    <label>Commands
+      <input type="number" id="cmdNum" value="10000" min="1">
+    </label>
+    <label>LCA Range
+      <input type="number" id="lcaRange" value="1000" min="1">
+    </label>
+    <label>Cache Num
+      <input type="number" id="cacheNum" value="1024" min="1">
+    </label>
+    <label>Bucket Num
+      <input type="number" id="bucketNum" value="128" min="1">
+    </label>
+    <label>Buffer Num
+      <input type="number" id="bufferNum" value="64" min="1">
+    </label>
+    <label>Nand Read Time (ms)
+      <input type="number" id="nandRead" value="20" min="0">
+    </label>
+    <label>Nand Program Time (ms)
+      <input type="number" id="nandProg" value="50" min="0">
+    </label>
+    <label>Nand Program Count (4KB)
+      <input type="number" id="progCnt" value="4" min="1">
+    </label>
+    <label>Queue Depth
+      <input type="number" id="queueDepth" value="32" min="1">
+    </label>
+    <button id="startBtn">Start Pattern</button>
+  </div>
+  <div id="status" class="status"></div>
+  <div id="visualization"></div>
+  <div id="result" class="result"></div>
+</div>
+<script src="script.js"></script>
+</body>
+</html>
