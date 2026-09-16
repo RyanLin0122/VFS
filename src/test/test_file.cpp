@@ -127,6 +127,71 @@ VFS_TEST(file, partial_reads_reassemble) {
 	CHECK_BLOB_EQ(back, data);
 }
 
+VFS_TEST(file, reads_across_fragmented_chains) {
+	// 讀取會把實體上連續的區塊併成一次讀，超過 .pak 視窗的整段直接讀進呼叫端 buffer。
+	// 碎片化的鏈、從區塊中間開始、還沒寫回磁碟的內容，結果都必須正確。
+	TempArchive a("fragread");
+	REQUIRE(a.Ok());
+
+	// 兩個檔交錯追加 → FAT 鏈互相穿插；x 最後再追加一大段連續區塊
+	std::vector<char> x = Blob(300000, 21);
+	const std::vector<char> y = Blob(300000, 22);
+	const int fx = vfs_file_create(a.h(), "frag/x.bin");
+	const int fy = vfs_file_create(a.h(), "frag/y.bin");
+	REQUIRE_GE(fx, 0);
+	REQUIRE_GE(fy, 0);
+	for (size_t off = 0; off < x.size(); off += 700) {
+		const int n = static_cast<int>((x.size() - off < 700) ? x.size() - off : 700);
+		REQUIRE_EQ(vfs_file_write(a.h(), fx, x.data() + off, n), n);
+		REQUIRE_EQ(vfs_file_write(a.h(), fy, y.data() + off, n), n);
+	}
+	const std::vector<char> tail = Blob(200000, 23);
+	REQUIRE_EQ(vfs_file_write(a.h(), fx, tail.data(), static_cast<int>(tail.size())), static_cast<int>(tail.size()));
+	x.insert(x.end(), tail.begin(), tail.end());
+	vfs_file_close(a.h(), fx);
+	vfs_file_close(a.h(), fy);
+
+	// 第一個讀取就是跨視窗的大段讀，此時視窗裡還有沒寫回磁碟的尾段
+	{
+		const int fd = vfs_file_open(a.h(), "frag/x.bin", kRdWr);
+		REQUIRE_GE(fd, 0);
+		const int aligned = ((300000 + 511) / 512) * 512;
+		REQUIRE_EQ(vfs_file_lseek(a.h(), fd, aligned, 0), 0);
+		vfs_stat_reset();
+		std::vector<char> back(x.size() - aligned);
+		CHECK_EQ(vfs_file_read(a.h(), fd, back.data(), static_cast<int>(back.size())), static_cast<int>(back.size()));
+		CHECK_EQ(vfs_stat_data_slide, 0);
+		CHECK_GT(vfs_stat_data_direct, 0);
+		CHECK_BLOB_EQ(back, std::vector<char>(x.begin() + aligned, x.end()));
+		vfs_file_close(a.h(), fd);
+	}
+
+	const int chunks[] = { 1000000, 100000, 65536, 4096, 513, 512, 511, 333 };
+	for (int chunk : chunks) {
+		for (int which = 0; which < 2; ++which) {
+			const int fd = vfs_file_open(a.h(), which ? "frag/y.bin" : "frag/x.bin", kRdWr);
+			REQUIRE_GE(fd, 0);
+			std::vector<char> back;
+			std::vector<char> buf(static_cast<size_t>(chunk));
+			for (;;) {
+				const int got = vfs_file_read(a.h(), fd, buf.data(), chunk);
+				if (got <= 0) break;
+				back.insert(back.end(), buf.begin(), buf.begin() + got);
+			}
+			vfs_file_close(a.h(), fd);
+			CHECK_MSG(back == (which ? y : x),
+				("以 " + std::to_string(chunk) + " bytes 分次讀 " + (which ? "y" : "x") + " 結果不符").c_str());
+		}
+	}
+
+	REQUIRE(a.Reopen() != nullptr);
+	std::vector<char> back;
+	CHECK(ReadAll(a.h(), "frag/x.bin", &back));
+	CHECK_BLOB_EQ(back, x);
+	CHECK(ReadAll(a.h(), "frag/y.bin", &back));
+	CHECK_BLOB_EQ(back, y);
+}
+
 VFS_TEST(file, partial_writes_reassemble) {
 	TempArchive a("pwrite");
 	REQUIRE(a.Ok());

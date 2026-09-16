@@ -54,7 +54,7 @@ char vfs_glob_key_buffer[4096];
 int vfs_errno = VFS_ERR_NONE;
 
 long long vfs_stat_fat_read = 0, vfs_stat_fat_write = 0, vfs_stat_fat_scan_steps = 0;
-long long vfs_stat_data_slide = 0, vfs_stat_data_read = 0, vfs_stat_data_write = 0;
+long long vfs_stat_data_slide = 0, vfs_stat_data_read = 0, vfs_stat_data_write = 0, vfs_stat_data_direct = 0;
 
 DWORD get_page_size(void) {
 	SYSTEM_INFO systemInfo;
@@ -244,7 +244,7 @@ void vfs_perror(void* unusedHandle, const char* prefixMessage) {
 
 void vfs_stat_reset(void) {
 	vfs_stat_fat_read = vfs_stat_fat_write = vfs_stat_fat_scan_steps = 0;
-	vfs_stat_data_slide = vfs_stat_data_read = vfs_stat_data_write = 0;
+	vfs_stat_data_slide = vfs_stat_data_read = vfs_stat_data_write = vfs_stat_data_direct = 0;
 }
 
 void* cache_page_get_buffer(VfsIioCachePage* page) {
@@ -1668,6 +1668,27 @@ int cache_get(VfsDataHandle* handle, long long file_offset_to_read_from, int num
 	return 0;
 }
 
+int cache_read_through(VfsDataHandle* handle, long long file_offset_to_read_from, int num_bytes_to_read,
+	void* output_buffer) {
+	++vfs_stat_data_direct;
+	if (!handle || !handle->cache || !handle->file_ptr || !output_buffer || num_bytes_to_read < 0) {
+		return -1;
+	}
+	if (handle->cache->is_synced_flag != 1 && cache_flush(handle) != 0) {
+		return -1;
+	}
+	if (vfs_file_seek64(handle->file_ptr, file_offset_to_read_from) != 0) {
+		return -1;
+	}
+
+	const size_t bytes_wanted = static_cast<size_t>(num_bytes_to_read);
+	const size_t bytes_read = fread(output_buffer, 1, bytes_wanted, handle->file_ptr);
+	if (bytes_read < bytes_wanted) {
+		memset(static_cast<char*>(output_buffer) + bytes_read, 0, bytes_wanted - bytes_read);
+	}
+	return 0;
+}
+
 int cache_put(VfsDataHandle* handle, long long file_offset_to_write_to, int num_bytes_to_write,
 	const void* input_buffer) {
 	if (!handle || !handle->cache || !input_buffer || num_bytes_to_write < 0) {
@@ -1713,6 +1734,17 @@ int cache_put(VfsDataHandle* handle, long long file_offset_to_write_to, int num_
 	return 0;
 }
 
+int vfs_data_read_bytes(VfsDataHandle* handle, long long file_offset, int num_bytes, void* buffer) {
+	++vfs_stat_data_read;
+	if (!handle || !handle->cache || !buffer || file_offset < 0 || num_bytes < 0) {
+		return -1;
+	}
+	if (static_cast<size_t>(num_bytes) < handle->cache->buffer_capacity) {
+		return cache_get(handle, file_offset, num_bytes, buffer);
+	}
+	return cache_read_through(handle, file_offset, num_bytes, buffer);
+}
+
 int vfs_data_read(VfsDataHandle* handle, int block_index, void* buffer) {
 	++vfs_stat_data_read;
 	if (!handle || !buffer || block_index < 0) {
@@ -1745,7 +1777,7 @@ int vfs_data_read_contiguous(VfsDataHandle* handle, int start_block_index, int n
 		return -1;
 	}
 
-	return cache_get(handle, offset, static_cast<int>(bytes), buffer);
+	return vfs_data_read_bytes(handle, offset, static_cast<int>(bytes), buffer);
 }
 
 int vfs_data_write_contiguous(VfsDataHandle* handle, int start_block_index, int num_blocks, const void* buffer) {
@@ -4051,7 +4083,6 @@ int vfs_file_read(VfsHandle* handle, int fd, void* buffer, int bytes_to_read) {
 	}
 	if (effective_bytes_to_read <= 0) return 0;
 
-	char temp_block_buffer[512];
 	int total_bytes_read = 0;
 	char* current_user_buffer_ptr = static_cast<char*>(buffer);
 	int remaining_bytes = effective_bytes_to_read;
@@ -4067,23 +4098,27 @@ int vfs_file_read(VfsHandle* handle, int fd, void* buffer, int bytes_to_read) {
 		}
 
 		int offset_in_physical_block = fh->current_byte_offset % 512;
-		int bytes_to_read_from_this_vfs_block = min(remaining_bytes, 512 - offset_in_physical_block);
+		int run_bytes = min(remaining_bytes, 512 - offset_in_physical_block);
+		int run_last_block_idx = actual_fat_block_idx;
+		int next_fat_block_idx = 0;
+		while (run_bytes < remaining_bytes) {
+			next_fat_block_idx = vfs_fat_chain_get_nth(handle->fat_handle, run_last_block_idx, 1);
+			if (next_fat_block_idx != run_last_block_idx + 1) break;
+			run_last_block_idx = next_fat_block_idx;
+			run_bytes += min(remaining_bytes - run_bytes, 512);
+		}
 
-		if (vfs_data_read(handle->data_handle, actual_fat_block_idx, temp_block_buffer) != 0) {
+		const long long run_file_offset = static_cast<long long>(actual_fat_block_idx) * 512 + offset_in_physical_block;
+		if (vfs_data_read_bytes(handle->data_handle, run_file_offset, run_bytes, current_user_buffer_ptr) != 0) {
 			vfs_errno = VFS_ERR_DATA_FILE;
 			break;
 		}
 
-		memcpy(current_user_buffer_ptr, temp_block_buffer + offset_in_physical_block,
-			bytes_to_read_from_this_vfs_block);
-
-		fh->current_byte_offset += bytes_to_read_from_this_vfs_block;
-		current_user_buffer_ptr += bytes_to_read_from_this_vfs_block;
-		total_bytes_read += bytes_to_read_from_this_vfs_block;
-		remaining_bytes -= bytes_to_read_from_this_vfs_block;
-
-		if (remaining_bytes > 0)
-			actual_fat_block_idx = vfs_fat_chain_get_nth(handle->fat_handle, actual_fat_block_idx, 1);
+		fh->current_byte_offset += run_bytes;
+		current_user_buffer_ptr += run_bytes;
+		total_bytes_read += run_bytes;
+		remaining_bytes -= run_bytes;
+		actual_fat_block_idx = next_fat_block_idx;
 	}
 	return total_bytes_read;
 }

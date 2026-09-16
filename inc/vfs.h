@@ -155,6 +155,7 @@ extern long long vfs_stat_fat_scan_steps;
 extern long long vfs_stat_data_slide;
 extern long long vfs_stat_data_read;
 extern long long vfs_stat_data_write;
+extern long long vfs_stat_data_direct;
 
 unsigned long get_page_size(void);
 int file_exists(const char* fileName);
@@ -230,9 +231,12 @@ int cache_create(VfsDataHandle* handle);
 int cache_resize(VfsDataHandle* handle, size_t new_capacity);
 int cache_destroy(VfsDataHandle* handle);
 int cache_get(VfsDataHandle* handle, long long file_offset_to_read_from, int num_bytes_to_read, void* output_buffer);
+int cache_read_through(VfsDataHandle* handle, long long file_offset_to_read_from, int num_bytes_to_read,
+	void* output_buffer);
 int cache_put(VfsDataHandle* handle, long long file_offset_to_write_to, int num_bytes_to_write,
 	const void* input_buffer);
 
+int vfs_data_read_bytes(VfsDataHandle* handle, long long file_offset, int num_bytes, void* buffer);
 int vfs_data_read(VfsDataHandle* handle, int block_index, void* buffer);
 int vfs_data_write(VfsDataHandle* handle, int block_index, const void* buffer);
 int vfs_data_read_contiguous(VfsDataHandle* handle, int start_block_index, int num_blocks, void* buffer);

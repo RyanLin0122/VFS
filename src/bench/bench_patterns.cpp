@@ -313,8 +313,8 @@ VFS_BENCH(write, "寫入：新增 / 原地覆寫 / 增長，含空間放大") {
 		std::printf("\n  [診斷] %s（邏輯 %.1f MB）\n", what, bytes / (1024.0 * 1024.0));
 		std::printf("    FAT 讀 %-12lld FAT 寫 %-12lld next_free 掃描步數 %lld\n",
 			vfs_stat_fat_read, vfs_stat_fat_write, vfs_stat_fat_scan_steps);
-		std::printf("    data 讀 %-11lld data 寫 %-11lld 視窗滑動 %lld\n",
-			vfs_stat_data_read, vfs_stat_data_write, vfs_stat_data_slide);
+		std::printf("    data 讀 %-11lld data 寫 %-11lld 視窗滑動 %-8lld 直接讀 %lld\n",
+			vfs_stat_data_read, vfs_stat_data_write, vfs_stat_data_slide, vfs_stat_data_direct);
 	};
 
 	long long logical = 0;
