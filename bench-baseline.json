@@ -1,0 +1,216 @@
+{
+  "format": 1,
+  "scale": 1,
+  "seed": 1592594996,
+  "results": [
+    {
+      "pattern": "pack",
+      "variant": "all",
+      "metrics": [
+        { "name": "throughput_mb_s", "value": 588.4893578, "unit": "MB/s", "higher_is_better": true, "gated": true },
+        { "name": "files_per_sec", "value": 3542.458466, "unit": "files/s", "higher_is_better": true, "gated": true },
+        { "name": "elapsed_s", "value": 0.2664816, "unit": "s", "higher_is_better": false, "gated": false },
+        { "name": "files_written", "value": 944, "unit": "files", "higher_is_better": true, "gated": true },
+        { "name": "files_failed", "value": 0, "unit": "files", "higher_is_better": false, "gated": true },
+        { "name": "space_amplification", "value": 1.035013766, "unit": "x", "higher_is_better": false, "gated": true },
+        { "name": "pak_mb", "value": 157.0625, "unit": "MB", "higher_is_better": false, "gated": true },
+        { "name": "paki_mb", "value": 5.25, "unit": "MB", "higher_is_better": false, "gated": true }
+      ]
+    },
+    {
+      "pattern": "pack",
+      "variant": "small",
+      "metrics": [
+        { "name": "throughput_mb_s", "value": 177.6082919, "unit": "MB/s", "higher_is_better": true, "gated": true },
+        { "name": "files_per_sec", "value": 37445.63182, "unit": "files/s", "higher_is_better": true, "gated": true },
+        { "name": "mean_file_kb", "value": 4.856932091, "unit": "KB", "higher_is_better": true, "gated": false }
+      ]
+    },
+    {
+      "pattern": "pack",
+      "variant": "medium",
+      "metrics": [
+        { "name": "throughput_mb_s", "value": 530.6523669, "unit": "MB/s", "higher_is_better": true, "gated": true },
+        { "name": "files_per_sec", "value": 1828.096273, "unit": "files/s", "higher_is_better": true, "gated": true },
+        { "name": "mean_file_kb", "value": 297.2425642, "unit": "KB", "higher_is_better": true, "gated": false }
+      ]
+    },
+    {
+      "pattern": "pack",
+      "variant": "large",
+      "metrics": [
+        { "name": "throughput_mb_s", "value": 491.1978373, "unit": "MB/s", "higher_is_better": true, "gated": true },
+        { "name": "files_per_sec", "value": 94.90264345, "unit": "files/s", "higher_is_better": true, "gated": true },
+        { "name": "mean_file_kb", "value": 5300.027134, "unit": "KB", "higher_is_better": true, "gated": false }
+      ]
+    },
+    {
+      "pattern": "pack",
+      "variant": "many_small",
+      "metrics": [
+        { "name": "files_per_sec", "value": 77856.55708, "unit": "files/s", "higher_is_better": true, "gated": true },
+        { "name": "throughput_mb_s", "value": 230.0736937, "unit": "MB/s", "higher_is_better": true, "gated": true },
+        { "name": "us_per_file", "value": 12.84413333, "unit": "us", "higher_is_better": false, "gated": true },
+        { "name": "index_bytes_per_file", "value": 279.8933333, "unit": "B", "higher_is_better": false, "gated": true }
+      ]
+    },
+    {
+      "pattern": "seqread",
+      "variant": "contiguous",
+      "metrics": [
+        { "name": "throughput_mb_s", "value": 2527.20783, "unit": "MB/s", "higher_is_better": true, "gated": true },
+        { "name": "files_per_sec", "value": 15212.72841, "unit": "files/s", "higher_is_better": true, "gated": true },
+        { "name": "read_failures", "value": 0, "unit": "files", "higher_is_better": false, "gated": true },
+        { "name": "per_file_mb_s_p50", "value": 2715.06358, "unit": "MB/s", "higher_is_better": true, "gated": true },
+        { "name": "per_file_mb_s_p05", "value": 337.5264993, "unit": "MB/s", "higher_is_better": true, "gated": false }
+      ]
+    },
+    {
+      "pattern": "seqread",
+      "variant": "fragmented",
+      "metrics": [
+        { "name": "throughput_mb_s", "value": 2355.160754, "unit": "MB/s", "higher_is_better": true, "gated": true },
+        { "name": "files_per_sec", "value": 14981.55872, "unit": "files/s", "higher_is_better": true, "gated": true },
+        { "name": "files_available", "value": 944, "unit": "files", "higher_is_better": true, "gated": true },
+        { "name": "files_expected", "value": 944, "unit": "files", "higher_is_better": true, "gated": true }
+      ]
+    },
+    {
+      "pattern": "randread",
+      "variant": "contiguous",
+      "metrics": [
+        { "name": "iops", "value": 43131.22861, "unit": "ops/s", "higher_is_better": true, "gated": true },
+        { "name": "throughput_mb_s", "value": 140.0657978, "unit": "MB/s", "higher_is_better": true, "gated": true },
+        { "name": "lat_p50_ms", "value": 0.0161, "unit": "ms", "higher_is_better": false, "gated": true },
+        { "name": "lat_p95_ms", "value": 0.05391, "unit": "ms", "higher_is_better": false, "gated": true },
+        { "name": "lat_p99_ms", "value": 0.1058, "unit": "ms", "higher_is_better": false, "gated": true },
+        { "name": "lat_max_ms", "value": 0.3969, "unit": "ms", "higher_is_better": false, "gated": false },
+        { "name": "failures", "value": 0, "unit": "ops", "higher_is_better": false, "gated": true },
+        { "name": "files_available", "value": 944, "unit": "files", "higher_is_better": true, "gated": true }
+      ]
+    },
+    {
+      "pattern": "randread",
+      "variant": "fragmented",
+      "metrics": [
+        { "name": "iops", "value": 54717.59468, "unit": "ops/s", "higher_is_better": true, "gated": true },
+        { "name": "throughput_mb_s", "value": 178.359169, "unit": "MB/s", "higher_is_better": true, "gated": true },
+        { "name": "lat_p50_ms", "value": 0.0127, "unit": "ms", "higher_is_better": false, "gated": true },
+        { "name": "lat_p95_ms", "value": 0.039005, "unit": "ms", "higher_is_better": false, "gated": true },
+        { "name": "lat_p99_ms", "value": 0.08572, "unit": "ms", "higher_is_better": false, "gated": true },
+        { "name": "lat_max_ms", "value": 0.2391, "unit": "ms", "higher_is_better": false, "gated": false },
+        { "name": "failures", "value": 0, "unit": "ops", "higher_is_better": false, "gated": true },
+        { "name": "files_available", "value": 944, "unit": "files", "higher_is_better": true, "gated": true }
+      ]
+    },
+    {
+      "pattern": "write",
+      "variant": "create",
+      "metrics": [
+        { "name": "throughput_mb_s", "value": 387.8507288, "unit": "MB/s", "higher_is_better": true, "gated": true },
+        { "name": "space_amplification", "value": 1.035013766, "unit": "x", "higher_is_better": false, "gated": true }
+      ]
+    },
+    {
+      "pattern": "write",
+      "variant": "overwrite_same_size",
+      "metrics": [
+        { "name": "throughput_mb_s", "value": 355.8678453, "unit": "MB/s", "higher_is_better": true, "gated": true },
+        { "name": "disk_growth_ratio", "value": 0, "unit": "x", "higher_is_better": false, "gated": true }
+      ]
+    },
+    {
+      "pattern": "write",
+      "variant": "grow",
+      "metrics": [
+        { "name": "throughput_mb_s", "value": 299.1162186, "unit": "MB/s", "higher_is_better": true, "gated": true },
+        { "name": "disk_growth_ratio", "value": 0.345667707, "unit": "x", "higher_is_better": false, "gated": true },
+        { "name": "files_intact", "value": 944, "unit": "files", "higher_is_better": true, "gated": true },
+        { "name": "files_expected", "value": 944, "unit": "files", "higher_is_better": true, "gated": true }
+      ]
+    },
+    {
+      "pattern": "open",
+      "variant": "500_files",
+      "metrics": [
+        { "name": "start_ms_min", "value": 1.5251, "unit": "ms", "higher_is_better": false, "gated": true },
+        { "name": "start_ms_p50", "value": 2.1415, "unit": "ms", "higher_is_better": false, "gated": false },
+        { "name": "lookup_hit_us_p50", "value": 0.429, "unit": "us", "higher_is_better": false, "gated": true },
+        { "name": "lookup_hit_us_p99", "value": 0.601854, "unit": "us", "higher_is_better": false, "gated": false },
+        { "name": "lookup_miss_us_p50", "value": 0.611, "unit": "us", "higher_is_better": false, "gated": true },
+        { "name": "glob_all_ms", "value": 0.1977, "unit": "ms", "higher_is_better": false, "gated": true },
+        { "name": "glob_returned", "value": 500, "unit": "files", "higher_is_better": true, "gated": true }
+      ]
+    },
+    {
+      "pattern": "open",
+      "variant": "2000_files",
+      "metrics": [
+        { "name": "start_ms_min", "value": 1.6712, "unit": "ms", "higher_is_better": false, "gated": true },
+        { "name": "start_ms_p50", "value": 2.4092, "unit": "ms", "higher_is_better": false, "gated": false },
+        { "name": "lookup_hit_us_p50", "value": 0.5129, "unit": "us", "higher_is_better": false, "gated": true },
+        { "name": "lookup_hit_us_p99", "value": 0.67058, "unit": "us", "higher_is_better": false, "gated": false },
+        { "name": "lookup_miss_us_p50", "value": 0.7451, "unit": "us", "higher_is_better": false, "gated": true },
+        { "name": "glob_all_ms", "value": 0.8646, "unit": "ms", "higher_is_better": false, "gated": true },
+        { "name": "glob_returned", "value": 2000, "unit": "files", "higher_is_better": true, "gated": true }
+      ]
+    },
+    {
+      "pattern": "open",
+      "variant": "8000_files",
+      "metrics": [
+        { "name": "start_ms_min", "value": 2.2894, "unit": "ms", "higher_is_better": false, "gated": true },
+        { "name": "start_ms_p50", "value": 3.0015, "unit": "ms", "higher_is_better": false, "gated": false },
+        { "name": "lookup_hit_us_p50", "value": 0.594, "unit": "us", "higher_is_better": false, "gated": true },
+        { "name": "lookup_hit_us_p99", "value": 0.921508, "unit": "us", "higher_is_better": false, "gated": false },
+        { "name": "lookup_miss_us_p50", "value": 0.6987, "unit": "us", "higher_is_better": false, "gated": true },
+        { "name": "glob_all_ms", "value": 4.5185, "unit": "ms", "higher_is_better": false, "gated": true },
+        { "name": "glob_returned", "value": 8000, "unit": "files", "higher_is_better": true, "gated": true }
+      ]
+    },
+    {
+      "pattern": "patch",
+      "variant": "hotfix_one",
+      "metrics": [
+        { "name": "files_touched", "value": 1, "unit": "files", "higher_is_better": true, "gated": true },
+        { "name": "pak_changed_pct", "value": 0.009948269001, "unit": "%", "higher_is_better": false, "gated": true },
+        { "name": "paki_changed_pct", "value": 0.2232142857, "unit": "%", "higher_is_better": false, "gated": false },
+        { "name": "delta_mb", "value": 0.02734375, "unit": "MB", "higher_is_better": false, "gated": true },
+        { "name": "download_amplification", "value": 2.305749899, "unit": "x", "higher_is_better": false, "gated": true }
+      ]
+    },
+    {
+      "pattern": "patch",
+      "variant": "patch_1pct",
+      "metrics": [
+        { "name": "files_touched", "value": 10, "unit": "files", "higher_is_better": true, "gated": true },
+        { "name": "pak_changed_pct", "value": 0.7212495026, "unit": "%", "higher_is_better": false, "gated": true },
+        { "name": "paki_changed_pct", "value": 0.4464285714, "unit": "%", "higher_is_better": false, "gated": false },
+        { "name": "delta_mb", "value": 1.15625, "unit": "MB", "higher_is_better": false, "gated": true },
+        { "name": "download_amplification", "value": 1.049747177, "unit": "x", "higher_is_better": false, "gated": true }
+      ]
+    },
+    {
+      "pattern": "patch",
+      "variant": "patch_1pct_grow",
+      "metrics": [
+        { "name": "files_touched", "value": 10, "unit": "files", "higher_is_better": true, "gated": true },
+        { "name": "pak_changed_pct", "value": 0.7296914944, "unit": "%", "higher_is_better": false, "gated": true },
+        { "name": "paki_changed_pct", "value": 1.413690476, "unit": "%", "higher_is_better": false, "gated": false },
+        { "name": "delta_mb", "value": 1.545410156, "unit": "MB", "higher_is_better": false, "gated": true },
+        { "name": "download_amplification", "value": 1.121676202, "unit": "x", "higher_is_better": false, "gated": true }
+      ]
+    },
+    {
+      "pattern": "patch",
+      "variant": "add_10_files",
+      "metrics": [
+        { "name": "files_touched", "value": 10, "unit": "files", "higher_is_better": true, "gated": true },
+        { "name": "pak_changed_pct", "value": 0.009909329634, "unit": "%", "higher_is_better": false, "gated": true },
+        { "name": "paki_changed_pct", "value": 0.5208333333, "unit": "%", "higher_is_better": false, "gated": false },
+        { "name": "delta_mb", "value": 0.658203125, "unit": "MB", "higher_is_better": false, "gated": true },
+        { "name": "download_amplification", "value": 1.053125, "unit": "x", "higher_is_better": false, "gated": true }
+      ]
+    }
+  ]
+}
